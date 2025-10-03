@@ -84,28 +84,69 @@ Return ONLY 5 formatted recommendations with dates/times.`;
 function parseGeminiResponse(text) {
   const activities = [];
 
-  // Split by double asterisks to find activity blocks
-  const blocks = text.split('**').filter(block => block.trim());
+  // First, remove markdown bold ** markers
+  text = text.replace(/\*\*/g, '');
 
-  for (let i = 0; i < blocks.length; i += 2) {
-    if (i + 1 < blocks.length) {
-      const title = blocks[i].trim();
-      const description = blocks[i + 1].trim();
+  // Split by lines to find activities starting with emoji
+  const lines = text.split('\n').map(line => line.trim()).filter(line => line);
 
-      // Extract emoji (first character is usually emoji)
-      const emojiMatch = title.match(/^(\p{Emoji}+)/u);
-      const emoji = emojiMatch ? emojiMatch[1] : '🎯';
-      const activityTitle = title.replace(/^(\p{Emoji}+\s*)/u, '').trim();
+  let currentActivity = null;
 
-      activities.push({
-        emoji,
-        title: activityTitle,
-        description: description.trim()
-      });
+  for (const line of lines) {
+    // Check if line starts with emoji (indicates start of new activity)
+    const emojiMatch = line.match(/^(\p{Emoji}+)\s*(.+)/u);
+
+    if (emojiMatch) {
+      // Save previous activity if exists
+      if (currentActivity) {
+        activities.push(currentActivity);
+      }
+
+      // Start new activity
+      const emoji = emojiMatch[1];
+      let titleAndDesc = emojiMatch[2];
+
+      // Try to split title from description
+      // Title usually ends with a date pattern or before the first sentence
+      const titleMatch = titleAndDesc.match(/^(.+?)(?:\s{2,}|\.\s+)(.+)?$/);
+
+      if (titleMatch) {
+        currentActivity = {
+          emoji: emoji,
+          title: titleMatch[1].trim(),
+          description: titleMatch[2] ? titleMatch[2].trim() : ''
+        };
+      } else {
+        currentActivity = {
+          emoji: emoji,
+          title: titleAndDesc.trim(),
+          description: ''
+        };
+      }
+    } else if (currentActivity && line && !line.match(/^(Here|Okay|I will|Note:)/i)) {
+      // Add continuation lines to description (skip preamble)
+      if (currentActivity.description) {
+        currentActivity.description += ' ' + line;
+      } else {
+        currentActivity.description = line;
+      }
     }
   }
 
-  return activities;
+  // Add the last activity
+  if (currentActivity) {
+    activities.push(currentActivity);
+  }
+
+  // Clean up descriptions
+  activities.forEach(activity => {
+    // Remove excessive whitespace
+    activity.description = activity.description.replace(/\s+/g, ' ').trim();
+    activity.title = activity.title.replace(/\s+/g, ' ').trim();
+  });
+
+  // Limit to 5 activities
+  return activities.slice(0, 5);
 }
 
 // Health check endpoint
