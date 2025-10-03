@@ -9,8 +9,9 @@ import React, { useState } from 'react';
  *
  * Props:
  * - onSearch: Function to call when form is submitted (passed from parent)
+ * - disabled: Boolean to disable form during API loading
  */
-function ActivityForm({ onSearch }) {
+function ActivityForm({ onSearch, disabled }) {
   // State for each form field
   const [city, setCity] = useState('');
   const [kidAges, setKidAges] = useState('');
@@ -128,8 +129,8 @@ function ActivityForm({ onSearch }) {
         </div>
 
         {/* Submit Button */}
-        <button type="submit" className="search-button">
-          🔍 Search Activities
+        <button type="submit" className="search-button" disabled={disabled}>
+          {disabled ? '⏳ Searching...' : '🔍 Search Activities'}
         </button>
       </form>
     </div>
