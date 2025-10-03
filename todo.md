@@ -1,4 +1,4 @@
-# Milestone 1: UI Setup with Dummy Data - Task List ✅ COMPLETED
+# Milestone 1: UI Setup with Dummy Data ✅ COMPLETED
 
 ## Project Setup
 - [x] Initialize React app with Vite (`npm create vite@latest`)
@@ -68,87 +68,178 @@
 
 ---
 
-# Milestone 2: Claude API Integration - Task List
+# Milestone 2: Gemini API Integration ✅ COMPLETED
 
 ## Project Configuration
-- [x] Create `.claude/settings.local/hooks.json` for auto-approved commands
-- [ ] Create `.gitignore` file (exclude node_modules, .env, build files)
-- [ ] Initialize git repository (`git init`)
+- [x] Create `.gitignore` file (exclude node_modules, .env, build files)
+- [x] Initialize git repository (`git init`)
 
 ## Backend Setup
-- [ ] Create `server` directory for backend code
-- [ ] Initialize Node.js project in server directory (`npm init -y`)
-- [ ] Install backend dependencies (express, @anthropic-ai/sdk, cors, dotenv)
-- [ ] Create `.env` file for API keys (add to .gitignore)
-- [ ] Create `server.js` main server file
-- [ ] Add `"type": "module"` to server/package.json for ES modules
+- [x] Create `server` directory for backend code
+- [x] Initialize Node.js project in server directory (`npm init -y`)
+- [x] Install backend dependencies (express, @google/generative-ai, cors, dotenv)
+- [x] Create `.env` file for API keys (add to .gitignore)
+- [x] Create `server.js` main server file
+- [x] Add `"type": "module"` to server/package.json for ES modules
 
 ## Express API Server
-- [ ] Set up Express app with CORS middleware
-- [ ] Create `/api/activities` POST endpoint
-- [ ] Add request body validation (city, kidAges, availability, maxDistance, preferences)
-- [ ] Add error handling middleware
-- [ ] Test server runs on port 5000
+- [x] Set up Express app with CORS middleware
+- [x] Create `/api/activities` POST endpoint
+- [x] Add request body validation (city, kidsAges, availability, milesRange, otherPreferences)
+- [x] Add error handling middleware
+- [x] Test server runs on port 5000
+- [x] Add health check endpoint (`/api/health`)
 
-## Claude API Integration
-- [ ] Import Anthropic SDK in server
-- [ ] Load API key from environment variables
-- [ ] Implement Claude Messages API call with web search tool enabled
-- [ ] Use prompt template from `prompt.md` with variable substitution
-- [ ] Configure model: `claude-sonnet-4-5-20250929`
-- [ ] Set max_tokens: 2000, temperature: 1.0
-- [ ] Enable web search tool: `web_search_20250520`
+## Gemini API Integration
+- [x] Import Google Generative AI SDK in server
+- [x] Load API key from environment variables
+- [x] Implement Gemini API call with Google Search grounding
+- [x] Use prompt template from `prompt.md` with variable substitution
+- [x] Configure model: `gemini-2.0-flash-exp`
+- [x] Set max_tokens: 2000, temperature: 1.0
+- [x] Enable Google Search tool
 
 ## Prompt Engineering
-- [ ] Load prompt template from `prompt.md`
-- [ ] Create function to substitute variables in prompt (city, kidAges, etc.)
-- [ ] Ensure prompt instructs Claude to use web search for real activities
-- [ ] Test prompt produces 5 formatted recommendations
+- [x] Load prompt template from `prompt.md`
+- [x] Create function to substitute variables in prompt (city, kidsAges, etc.)
+- [x] Ensure prompt instructs Gemini to use web search for real activities
+- [x] Add event-specific search requirements (dates/times mandatory)
+- [x] Test prompt produces 5 formatted recommendations
 
 ## Response Parsing
-- [ ] Parse Claude API response to extract activity recommendations
-- [ ] Validate response format (emoji, title, description)
-- [ ] Handle cases where Claude doesn't return exactly 5 activities
-- [ ] Convert Claude text response to structured JSON
-- [ ] Add error handling for API failures
+- [x] Parse Gemini API response to extract activity recommendations
+- [x] Handle markdown formatting (**bold** markers)
+- [x] Validate response format (emoji, title, description)
+- [x] Handle cases where Gemini doesn't return exactly 5 activities
+- [x] Convert Gemini text response to structured JSON
+- [x] Add error handling for API failures
 
 ## Frontend-Backend Connection
-- [ ] Update frontend `App.jsx` to call backend API instead of dummy data
-- [ ] Add `fetch()` or axios call to `/api/activities`
-- [ ] Add loading state during API call
-- [ ] Add error state for API failures
-- [ ] Display error messages to user if API fails
+- [x] Update frontend `App.jsx` to call backend API instead of dummy data
+- [x] Add `fetch()` call to `/api/activities`
+- [x] Fix field name mapping (kidAges → kidsAges, maxDistance → milesRange)
+- [x] Add loading state during API call
+- [x] Add error state for API failures
+- [x] Display error messages to user if API fails
 
 ## Loading & Error States
-- [ ] Add loading spinner/skeleton while waiting for results
-- [ ] Disable search button during loading
-- [ ] Add error message component for API errors
-- [ ] Add retry button for failed requests
-- [ ] Add timeout handling (if API takes >10 seconds)
+- [x] Add loading spinner/skeleton while waiting for results
+- [x] Disable search button during loading
+- [x] Add error message component for API errors
+- [x] Add retry button for failed requests
+- [x] Style loading and error states with CSS
 
 ## Testing & Validation
-- [ ] Test end-to-end flow: form submission → API call → results display
-- [ ] Test with different cities and preferences
-- [ ] Verify web search tool is being used (check for real, current activities)
-- [ ] Test error handling (invalid API key, network errors)
-- [ ] Test edge cases (empty preferences, very large distance)
+- [x] Test end-to-end flow: form submission → API call → results display
+- [x] Test with different cities and preferences
+- [x] Verify Google Search grounding is being used
+- [x] Test error handling (invalid API key, network errors)
+- [x] Fix field mapping bug
+- [x] Fix response parsing bug
 
 ## Environment & Configuration
-- [ ] Create `.env.example` file with variable names (no real keys)
-- [ ] Add `.env` to `.gitignore`
-- [ ] Document how to get Claude API key in README
-- [ ] Add instructions for running both frontend and backend
+- [x] Create `.env.example` file with variable names (no real keys)
+- [x] Add `.env` to `.gitignore`
+- [x] Document how to get Gemini API key in README
+- [x] Add instructions for running both frontend and backend
 
 ## Documentation
-- [ ] Create README.md with setup instructions
-- [ ] Document API endpoint structure
-- [ ] Add example API request/response
-- [ ] Update CLAUDE.md with backend architecture notes
-- [ ] Add npm scripts to root package.json (dev:server, dev:client, dev:all)
+- [x] Update README.md with Milestone 2 completion
+- [x] Document API endpoint structure
+- [x] Add example API request/response
+- [x] Create MIGRATION_SUMMARY.md for Claude → Gemini migration
+- [x] Create MILESTONE2_COMPLETE.md with completion report
+- [x] Create BUGFIX_SUMMARY.md documenting bug fixes
+- [x] Add npm scripts to root package.json (server, dev:all)
 
-## Deployment Preparation (Optional)
-- [ ] Add production build scripts
-- [ ] Configure environment variables for production
-- [ ] Test production build locally
-- [ ] Add health check endpoint (`/api/health`)
-- [ ] Document deployment steps for Vercel/Netlify (frontend) and Railway/Render (backend)
+---
+
+# Milestone 3: Production Deployment & Polish 🚧 IN PROGRESS
+
+## Code Quality & Testing
+- [ ] Add input validation and sanitization
+- [ ] Add request rate limiting to prevent abuse
+- [ ] Add comprehensive error logging
+- [ ] Create integration tests for API endpoints
+- [ ] Add frontend unit tests for components
+- [ ] Test cross-browser compatibility (Chrome, Firefox, Safari)
+- [ ] Test accessibility (keyboard navigation, screen readers)
+
+## Performance Optimization
+- [ ] Add caching for repeated searches (Redis or in-memory)
+- [ ] Optimize Gemini API calls (reduce token usage)
+- [ ] Add request debouncing on frontend
+- [ ] Optimize bundle size (code splitting, lazy loading)
+- [ ] Add compression middleware (gzip)
+- [ ] Implement CDN for static assets
+
+## User Experience Enhancements
+- [ ] Add search history (localStorage)
+- [ ] Add "Save favorite activities" feature
+- [ ] Add share functionality (copy link, social media)
+- [ ] Add print-friendly view for activities
+- [ ] Improve empty state messaging
+- [ ] Add tooltips/help text for form fields
+- [ ] Add example searches ("Try: San Francisco, ages 5-10, Saturday")
+
+## Security Hardening
+- [ ] Add rate limiting per IP address
+- [ ] Implement API key rotation strategy
+- [ ] Add HTTPS enforcement
+- [ ] Sanitize all user inputs (XSS prevention)
+- [ ] Add CORS whitelist for production domains
+- [ ] Add security headers (helmet.js)
+- [ ] Implement CSP (Content Security Policy)
+
+## Monitoring & Analytics
+- [ ] Add error tracking (Sentry or similar)
+- [ ] Add analytics (usage metrics, popular searches)
+- [ ] Add uptime monitoring
+- [ ] Add performance monitoring (API response times)
+- [ ] Create admin dashboard for monitoring
+- [ ] Add logging for debugging (Winston or Pino)
+
+## Deployment Configuration
+- [ ] Set up production environment variables
+- [ ] Configure production build scripts
+- [ ] Set up CI/CD pipeline (GitHub Actions)
+- [ ] Deploy backend to Railway/Render/Heroku
+- [ ] Deploy frontend to Vercel/Netlify
+- [ ] Configure custom domain
+- [ ] Set up SSL certificates
+- [ ] Configure environment-specific configs (dev/staging/prod)
+
+## Documentation & User Guides
+- [ ] Create user documentation (how to use the app)
+- [ ] Add FAQ section
+- [ ] Document API for potential integrations
+- [ ] Create troubleshooting guide
+- [ ] Add contributing guidelines
+- [ ] Create changelog for version tracking
+
+## Optional Enhancements
+- [ ] Add multi-language support (i18n)
+- [ ] Add dark mode toggle
+- [ ] Add mobile app wrapper (PWA)
+- [ ] Add email notifications for saved activities
+- [ ] Add calendar integration (export to Google Calendar)
+- [ ] Add map view for activity locations
+- [ ] Add filtering/sorting options for results
+- [ ] Add user accounts (authentication)
+
+## Performance Metrics Targets
+- [ ] API response time < 3 seconds (90th percentile)
+- [ ] Frontend load time < 2 seconds
+- [ ] Lighthouse score > 90 (Performance, Accessibility, Best Practices, SEO)
+- [ ] Mobile-friendly score > 95
+- [ ] Zero critical security vulnerabilities
+
+---
+
+## Notes
+
+**Milestone 1**: ✅ Completed - Basic UI with dummy data
+**Milestone 2**: ✅ Completed - Full backend integration with Gemini API and event-specific search
+**Milestone 3**: 🚧 In Progress - Production deployment and polish
+
+See `MILESTONE2_COMPLETE.md` for detailed completion report of Milestone 2.
