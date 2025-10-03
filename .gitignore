@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development
+.env.production
+*.env
+
+# API keys and secrets
+secrets/
+*.secret
+apikeys.json
+config/local.json
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code internal
+.claude/
+
+# Activity agent git (nested repo)
+activity_agent/
