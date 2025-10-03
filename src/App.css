@@ -114,6 +114,25 @@
 .form-subtitle {
   font-size: 14px;
   color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.example-btn {
+  padding: 6px 12px;
+  background-color: var(--light-blue);
+  color: var(--primary-blue);
+  border: 1px solid var(--primary-blue);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: var(--spacing-xs);
+}
+
+.example-btn:hover {
+  background-color: var(--primary-blue);
+  color: white;
 }
 
 /* Form Groups */

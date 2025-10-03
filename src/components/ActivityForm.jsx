@@ -39,11 +39,22 @@ function ActivityForm({ onSearch, disabled }) {
     onSearch(formData);
   };
 
+  const fillExample = () => {
+    setCity('San Francisco');
+    setKidAges('7');
+    setAvailability('this Saturday');
+    setMaxDistance(15);
+    setPreferences('outdoor activities, family-friendly');
+  };
+
   return (
     <div className="form-container">
       <div className="form-header">
         <h2>Find Activities</h2>
         <p className="form-subtitle">Tell us about your family's preferences</p>
+        <button type="button" className="example-btn" onClick={fillExample}>
+          Try Example
+        </button>
       </div>
 
       <form onSubmit={handleSubmit}>

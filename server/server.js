@@ -2,6 +2,9 @@ import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { body, validationResult } from 'express-validator';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 
 dotenv.config();
 
@@ -11,9 +14,24 @@ const PORT = process.env.PORT || 5000;
 // Initialize Gemini client
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Security middleware
+app.use(helmet()); // Adds security headers
+app.use(cors()); // Enable CORS
+app.use(express.json({ limit: '10kb' })); // Limit body size to prevent large payloads
+
+// Rate limiting: Max 10 requests per minute per IP
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // Max 10 requests per minute
+  message: {
+    error: 'Too many requests',
+    message: 'Please try again in a minute'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/', limiter);
 
 // Prompt template substitution function
 function buildPrompt(city, kidsAges, availability, milesRange, otherPreferences) {
@@ -154,18 +172,57 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
-// Main activities endpoint
-app.post('/api/activities', async (req, res) => {
-  try {
-    // Validate request body
-    const { city, kidsAges, availability, milesRange, otherPreferences } = req.body;
+// Input validation rules
+const validateActivitiesRequest = [
+  body('city')
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('City must be between 2 and 100 characters')
+    .matches(/^[a-zA-Z\s\-,]+$/)
+    .withMessage('City can only contain letters, spaces, hyphens, and commas'),
 
-    if (!city || !kidsAges || !availability || !milesRange) {
+  body('kidsAges')
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Kids ages must be between 1 and 50 characters')
+    .matches(/^[\d\s,\-]+$/)
+    .withMessage('Kids ages must contain only numbers, spaces, commas, and hyphens'),
+
+  body('availability')
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Availability must be between 2 and 100 characters')
+    .matches(/^[a-zA-Z0-9\s\-,:]+$/)
+    .withMessage('Availability contains invalid characters'),
+
+  body('milesRange')
+    .isInt({ min: 1, max: 500 })
+    .withMessage('Miles range must be between 1 and 500'),
+
+  body('otherPreferences')
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage('Preferences must be less than 500 characters')
+];
+
+// Main activities endpoint
+app.post('/api/activities', validateActivitiesRequest, async (req, res) => {
+  try {
+    // Check validation results
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({
-        error: 'Missing required fields',
-        required: ['city', 'kidsAges', 'availability', 'milesRange']
+        error: 'Validation failed',
+        details: errors.array().map(err => ({
+          field: err.path,
+          message: err.msg
+        }))
       });
     }
+
+    // Sanitized inputs (trimmed and validated)
+    const { city, kidsAges, availability, milesRange, otherPreferences } = req.body;
 
     // Build prompt with user inputs
     const prompt = buildPrompt(city, kidsAges, availability, milesRange, otherPreferences);

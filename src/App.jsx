@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import ActivityForm from './components/ActivityForm';
 import ActivityResults from './components/ActivityResults';
 import './App.css';
@@ -17,17 +17,25 @@ function App() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const debounceTimer = useRef(null);
 
   /**
    * handleSearch: Called when user submits the form
    *
-   * Learning Note: This function now makes a real API call to our backend server.
-   * The backend calls Claude's API with web search to find real activities.
+   * Learning Note: This function now includes debouncing to prevent excessive API calls.
+   * Debouncing ensures that if the user clicks multiple times, we only make one API call.
    * We use async/await to handle the asynchronous network request.
    *
    * @param {Object} formData - The form values from ActivityForm
    */
-  const handleSearch = async (formData) => {
+  const handleSearch = useCallback(async (formData) => {
+    // Clear any existing debounce timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    // Debounce: wait 300ms before making API call
+    debounceTimer.current = setTimeout(async () => {
     console.log('Form submitted with:', formData);
 
     // Reset states
@@ -71,7 +79,8 @@ function App() {
       // Learning Note: finally block runs whether try succeeds or fails
       setLoading(false);
     }
-  };
+    }, 300); // 300ms debounce delay
+  }, []);
 
   /**
    * handleNewSearch: Reset the form to start a new search
